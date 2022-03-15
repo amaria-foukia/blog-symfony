@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <br>
+
+    <article>
+        <h2>{{ article.title  }}</h2>
+        <div class="metadata">Ecrit le {{ article.createdAt | date('d/m/Y') }} à {{ article.createdAt | date('H:i') }} Dans la catégorie {{ article.category.title }}</div>
+        <div class="content">
+            <img src="{{ article.image }}" alt="">
+            {{ article.content | raw }}
+        </div>
+    </article>
+
+    <br><br>
+
+    <h4 style="text-align: right"> {{ article.comments | length }} Réactions à l'article : </h4>
+    <hr>
+
+    <section id="commentaires">
+
+        {% for comment in article.comments %}
+
+        <div class="comment">
+
+            <div class="row">
+
+                <div class="col-3">
+                    {{ comment.author }} (<small> {{ comment.createdAt | date('d,m,Y à H:i')}} </small>)
+                </div>
+
+                <div class="col">
+                    {{ comment.content | raw }}
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+        <br><br>
+        <h4>Réagissez à l'article !</h4>
+        <hr>
+
+        {% if app.user %}
+        {{ form_start(commentForm) }}
+        {{ form_row(commentForm.author, { 'label':'Nom', 'attr':{ 'placeholder': 'Votre nom'}}) }}
+        {{ form_row(commentForm.content, { 'label':'Texte', 'attr':{ 'placeholder': 'Votre commentaire'}}) }}
+        <button type="submit" style="text-align: right" class="btn btn-warning"> Commenter ! </button>
+        {{ form_end(commentForm) }}
+        {% else %}
+            <br><h5> Connectez-vous pour commenter les articles ! </h5>
+            <a href="{{ path('security_login')}}" class="btn btn-warning" >Connexion</a><br><br>
+        {% endif %}
+
+    </section>
+
+{% endblock %}
